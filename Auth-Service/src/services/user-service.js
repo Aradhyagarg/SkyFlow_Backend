@@ -40,10 +40,9 @@ async function signin(data) {
         if(!passwordMatch) {
             throw new AppError('Invalid password', StatusCodes.BAD_REQUEST);
         }
-        // TEMPORARILY DISABLED FOR TESTING
-        // if(!user.isVerified) {
-        //     throw new AppError('Please verify your email before logging in.', StatusCodes.BAD_REQUEST);
-        // }
+        if(!user.isVerified) {
+            throw new AppError('Please verify your email before logging in.', StatusCodes.BAD_REQUEST);
+        }
         const jwtToken = jwt.sign(
             { id: user.id, email: user.email },
             ServerConfig.JWT_SECRET,
