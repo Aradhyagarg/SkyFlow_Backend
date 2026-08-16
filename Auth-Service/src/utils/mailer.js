@@ -1,7 +1,8 @@
 const nodemailer = require('nodemailer');
 
 async function sendVerificationEmail(email, token) {
-    const verificationLink = `http://localhost:5001/api/v1/users/verify?token=${token}`;
+    const gatewayUrl = process.env.API_GATEWAY_URL || 'http://localhost:3005';
+    const verificationLink = `${gatewayUrl}/api/v1/users/verify?token=${token}`;
     
     console.log('\n==================================================');
     console.log(`✉️  EMAIL VERIFICATION LINK FOR: ${email}`);
@@ -67,7 +68,8 @@ async function sendVerificationEmail(email, token) {
 }
 
 async function sendResetPasswordEmail(email, token) {
-    const resetLink = `http://localhost:5173/?resetToken=${token}`;
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetLink = `${frontendUrl}/?resetToken=${token}`;
     
     console.log('\n==================================================');
     console.log(`✉️  PASSWORD RESET LINK FOR: ${email}`);
