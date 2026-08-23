@@ -6,7 +6,12 @@ const createMailerTransporter = () => {
 
     if (isGmail) {
         return createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+            socketTimeout: 10000,
             auth: {
                 user: process.env.SMTP_USER,
                 pass: process.env.SMTP_PASS,
@@ -14,9 +19,14 @@ const createMailerTransporter = () => {
         });
     }
 
+    const port = parseInt(process.env.SMTP_PORT || '465');
     return createTransport({
         host: host,
-        port: parseInt(process.env.SMTP_PORT || '587'),
+        port: port,
+        secure: port === 465,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
