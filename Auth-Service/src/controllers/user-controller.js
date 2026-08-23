@@ -44,22 +44,49 @@ async function isAuthenticated(req, res, next) {
 }
 
 async function verifyEmail(req, res, next) {
+    const frontendUrl = process.env.FRONTEND_URL || 'https://sky-flow-frontend.vercel.app';
     try {
         await UserService.verifyEmail(req.query.token);
         return res.status(StatusCodes.OK).send(`
-            <div style="font-family: sans-serif; text-align: center; margin-top: 100px; padding: 20px;">
-                <h1 style="color: #34d399; font-size: 2.2rem; font-weight: 800; margin-bottom: 20px;">✓ Email Verified Successfully!</h1>
-                <p style="font-size: 1.1rem; color: #cbd5e1; background: #1e293b; padding: 15px; border-radius: 8px; max-width: 400px; margin: 0 auto 20px auto; border: 1px solid #334155;">Your MakeMyTrip account is now active.</p>
-                <p style="color: #94a3b8; font-size: 0.95rem;">You can now close this tab and sign in to the application.</p>
-            </div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta http-equiv="refresh" content="3;url=${frontendUrl}?verified=true" />
+                <title>Email Verified - SkyFlow</title>
+            </head>
+            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+                <div style="background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; max-width: 450px; border: 1px solid #334155;">
+                    <div style="background: rgba(16, 185, 129, 0.1); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                        <span style="color: #10b981; font-size: 36px; font-weight: bold;">✓</span>
+                    </div>
+                    <h1 style="color: #f8fafc; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px;">Email Verified!</h1>
+                    <p style="color: #94a3b8; font-size: 1rem; line-height: 1.5; margin-bottom: 24px;">Your SkyFlow account is now fully active.</p>
+                    <p style="color: #38bdf8; font-size: 0.9rem; margin-bottom: 20px;">Redirecting you to the sign-in page in 3 seconds...</p>
+                    <a href="${frontendUrl}?verified=true" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Go to Sign In Now →</a>
+                </div>
+            </body>
+            </html>
         `);
     } catch(error) {
         return res.status(StatusCodes.BAD_REQUEST).send(`
-            <div style="font-family: sans-serif; text-align: center; margin-top: 100px; padding: 20px;">
-                <h1 style="color: #f43f5e; font-size: 2.2rem; font-weight: 800; margin-bottom: 20px;">❌ Verification Failed</h1>
-                <p style="font-size: 1.1rem; color: #cbd5e1; background: #1e293b; padding: 15px; border-radius: 8px; max-width: 400px; margin: 0 auto 20px auto; border: 1px solid #334155;">${error.message || 'Invalid or expired verification link.'}</p>
-                <p style="color: #94a3b8; font-size: 0.95rem;">Please request a new link or try registering again.</p>
-            </div>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Verification Failed - SkyFlow</title>
+            </head>
+            <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0;">
+                <div style="background: #1e293b; padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); text-align: center; max-width: 450px; border: 1px solid #334155;">
+                    <div style="background: rgba(244, 63, 94, 0.1); width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                        <span style="color: #f43f5e; font-size: 36px; font-weight: bold;">✕</span>
+                    </div>
+                    <h1 style="color: #f8fafc; font-size: 1.8rem; font-weight: 700; margin-bottom: 10px;">Verification Failed</h1>
+                    <p style="color: #f43f5e; font-size: 0.95rem; line-height: 1.5; margin-bottom: 24px;">${error.message || 'Invalid or expired verification link.'}</p>
+                    <a href="${frontendUrl}" style="background-color: #334155; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Return to SkyFlow →</a>
+                </div>
+            </body>
+            </html>
         `);
     }
 }
