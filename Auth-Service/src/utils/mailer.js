@@ -1,8 +1,17 @@
 const { createTransport } = require('nodemailer');
+const dns = require('dns');
+
+// Force Node.js DNS to prefer IPv4 over IPv6 to prevent ENETUNREACH errors on cloud hosts like Render
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 const createMailerTransporter = () => {
     return createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        family: 4,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS,
