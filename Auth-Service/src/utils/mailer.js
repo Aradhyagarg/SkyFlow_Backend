@@ -14,7 +14,14 @@ async function sendVerificationEmail(email, token) {
         
         if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
             console.log('[Mailer] Using custom SMTP configuration...');
-            transporter = nodemailer.createTransport({
+            const isGmail = process.env.SMTP_HOST.includes('gmail');
+            transporter = nodemailer.createTransport(isGmail ? {
+                service: 'gmail',
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS
+                }
+            } : {
                 host: process.env.SMTP_HOST,
                 port: parseInt(process.env.SMTP_PORT || '587'),
                 secure: process.env.SMTP_PORT === '465',
@@ -81,7 +88,14 @@ async function sendResetPasswordEmail(email, token) {
         
         if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
             console.log('[Mailer] Using custom SMTP configuration...');
-            transporter = nodemailer.createTransport({
+            const isGmail = process.env.SMTP_HOST.includes('gmail');
+            transporter = nodemailer.createTransport(isGmail ? {
+                service: 'gmail',
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS
+                }
+            } : {
                 host: process.env.SMTP_HOST,
                 port: parseInt(process.env.SMTP_PORT || '587'),
                 secure: process.env.SMTP_PORT === '465',
