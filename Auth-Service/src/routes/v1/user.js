@@ -12,5 +12,6 @@ router.get('/profile', UserController.getProfile);
 router.patch('/profile', UserController.updateProfile);
 router.post('/forgot-password', UserController.forgotPassword);
 router.post('/reset-password', UserController.resetPassword);
+router.get('/test-email', UserController.testEmail);
 
 module.exports = router;

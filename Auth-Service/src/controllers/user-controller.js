@@ -110,6 +110,35 @@ async function resetPassword(req, res, next) {
     }
 }
 
+async function testEmail(req, res) {
+    const { sendVerificationEmail } = require('../utils/mailer');
+    const targetEmail = req.query.email || 'aradhya.gargag89@gmail.com';
+    try {
+        await sendVerificationEmail(targetEmail, 'test-debug-token-123');
+        return res.status(200).json({
+            success: true,
+            message: `Email test completed successfully to ${targetEmail}`,
+            env: {
+                hasUser: !!process.env.SMTP_USER,
+                hasPass: !!process.env.SMTP_PASS,
+                user: process.env.SMTP_USER
+            }
+        });
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: 'Email test failed',
+            error: err.message,
+            stack: err.stack,
+            env: {
+                hasUser: !!process.env.SMTP_USER,
+                hasPass: !!process.env.SMTP_PASS,
+                user: process.env.SMTP_USER
+            }
+        });
+    }
+}
+
 module.exports = {
     signup,
     signin,
@@ -118,5 +147,6 @@ module.exports = {
     getProfile,
     updateProfile,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    testEmail
 };
