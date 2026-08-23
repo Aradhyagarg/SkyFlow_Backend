@@ -62,7 +62,7 @@ const sendEmailDispatch = async (to, subject, html) => {
 };
 
 const sendVerificationEmail = async (email, token) => {
-    const gatewayUrl = process.env.API_GATEWAY_URL || 'http://localhost:3005';
+    const gatewayUrl = process.env.API_GATEWAY_URL || 'https://skyflow-api-gateway.onrender.com';
     const verificationLink = `${gatewayUrl}/api/v1/users/verify?token=${token}`;
 
     const html = `
@@ -83,7 +83,7 @@ const sendVerificationEmail = async (email, token) => {
 };
 
 const sendResetPasswordEmail = async (email, token) => {
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const frontendUrl = process.env.FRONTEND_URL || 'https://sky-flow-frontend.vercel.app';
     const resetLink = `${frontendUrl}/?resetToken=${token}`;
 
     const html = `
