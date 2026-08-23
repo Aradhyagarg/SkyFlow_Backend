@@ -8,7 +8,7 @@ if (dns.setDefaultResultOrder) {
 
 const sendViaResend = async (to, subject, html) => {
     const apiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM || 'SkyFlow Support <onboarding@resend.dev>';
+    const fromEmail = process.env.RESEND_FROM || 'onboarding@resend.dev';
 
     const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
