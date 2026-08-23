@@ -14,8 +14,12 @@ async function create(data) {
         const userData = { ...data, verificationToken: token, isVerified: false };
         const user = await userRepository.create(userData);
         
-        // Trigger email sending asynchronously
-        sendVerificationEmail(user.email, token);
+        // Trigger email sending
+        try {
+            await sendVerificationEmail(user.email, token);
+        } catch (emailErr) {
+            console.error('[Mailer Error] Failed to send verification email:', emailErr.message);
+        }
         
         return user;
     } catch(error) {
