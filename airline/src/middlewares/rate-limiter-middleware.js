@@ -7,6 +7,11 @@ const LIMIT = 100;
 const WINDOW_MS = 60000; // 60 seconds
 
 async function rateLimiter(req, res, next) {
+    // Bypass rate limiting for internal microservice calls
+    if (req.headers['user-agent']?.includes('axios') || req.headers['x-internal-call']) {
+        return next();
+    }
+
     const rawForwarded = req.headers['x-forwarded-for'];
     const ip = rawForwarded ? rawForwarded.split(',')[0].trim() : (req.ip || req.socket.remoteAddress || 'client');
     const key = `rate_limit:${ip}:flights-search`;
