@@ -3,11 +3,12 @@ const { RedisClient } = require('../config');
 const AppError = require('../utils/errors/app-error');
 
 // Default limits: 100 requests per minute
-const LIMIT = 10;
+const LIMIT = 100;
 const WINDOW_MS = 60000; // 60 seconds
 
 async function rateLimiter(req, res, next) {
-    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const rawForwarded = req.headers['x-forwarded-for'];
+    const ip = rawForwarded ? rawForwarded.split(',')[0].trim() : (req.ip || req.socket.remoteAddress || 'client');
     const key = `rate_limit:${ip}:flights-search`;
     const now = Date.now();
     const windowStart = now - WINDOW_MS;
