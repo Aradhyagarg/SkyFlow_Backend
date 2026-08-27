@@ -29,10 +29,10 @@ async function checkAuth(req, res, next) {
         }
     } catch(error) {
         ErrorResponse.message = 'User is not authenticated';
-        const statusCode = error.response ? error.response.status : StatusCodes.INTERNAL_SERVER_ERROR;
-        const explanation = error.response && error.response.data && error.response.data.error 
-            ? error.response.data.error.explanation 
-            : 'Something went wrong during auth call';
+        const statusCode = error.response ? error.response.status : StatusCodes.UNAUTHORIZED;
+        const explanation = (error.response && error.response.data) 
+            ? (error.response.data.error?.explanation || error.response.data.message || 'Invalid JWT token')
+            : (error.message || 'Something went wrong during auth call');
         ErrorResponse.error = new AppError([explanation], statusCode);
         return res.status(statusCode).json(ErrorResponse);
     }
