@@ -244,6 +244,21 @@ async function makePayment(data){
             throw new AppError('The user corresponding to the booking does not match', StatusCodes.BAD_REQUEST);
         }
         const response = await bookingRepository.update(data.bookingId, {status: BOOKED, paymentMethod: data.paymentMethod}, transaction);
+        
+        // Write event to Transactional Outbox for RabbitMQ publishing
+        const OutboxRepository = require('../repositories/outbox-repository');
+        const outboxRepository = new OutboxRepository();
+        await outboxRepository.create({
+            eventType: 'booking.paid',
+            payload: {
+                bookingId: data.bookingId,
+                userId: data.userId,
+                totalCost: data.totalCost,
+                status: BOOKED,
+                paymentMethod: data.paymentMethod
+            }
+        }, transaction);
+
         await transaction.commit();
         return response;
     }catch(error){
@@ -287,6 +302,20 @@ async function makeRoundTripPayment(data) {
         // Update status of both bookings to BOOKED
         await bookingRepository.update(data.outboundBookingId, { status: BOOKED, paymentMethod: data.paymentMethod }, transaction);
         await bookingRepository.update(data.returnBookingId, { status: BOOKED, paymentMethod: data.paymentMethod }, transaction);
+
+        const OutboxRepository = require('../repositories/outbox-repository');
+        const outboxRepository = new OutboxRepository();
+        await outboxRepository.create({
+            eventType: 'roundtrip_booking.paid',
+            payload: {
+                outboundBookingId: data.outboundBookingId,
+                returnBookingId: data.returnBookingId,
+                userId: data.userId,
+                totalCost: data.totalCost,
+                status: BOOKED,
+                paymentMethod: data.paymentMethod
+            }
+        }, transaction);
 
         await transaction.commit();
         
