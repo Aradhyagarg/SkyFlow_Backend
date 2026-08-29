@@ -11,6 +11,6 @@ module.exports = {
     REDIS_PORT: process.env.REDIS_PORT || 6379,
     REDIS_USERNAME: process.env.REDIS_USERNAME,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || 'rzp_test_SkyFlowDemo123',
-    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || 'rzp_test_SecretSkyFlow123'
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || process.env.RAZORPAY_API_KEY || 'rzp_test_FZ7IMhBvL8Q5lf',
+    RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || process.env.RAZORPAY_API_SECRET || 'lVoVyR5NGd7CH3bV4E1oNrg9'
 }
