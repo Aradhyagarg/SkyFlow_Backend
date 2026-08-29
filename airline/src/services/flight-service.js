@@ -78,7 +78,10 @@ async function getAllFlights(query){
 
     // trips=MUM-DEL-2026-05-11
     if(query.trips){
-        const [departureAirportId, arrivalAirportId, date] = query.trips.split("-");
+        const parts = query.trips.split("-");
+        const departureAirportId = parts[0];
+        const arrivalAirportId = parts[1];
+        const date = parts.slice(2).join("-");
         if (departureAirportId === arrivalAirportId) {
             throw new AppError('Departure and Arrival Airport cannot be same', StatusCodes.BAD_REQUEST);
         }
