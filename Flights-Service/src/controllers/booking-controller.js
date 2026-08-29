@@ -147,6 +147,18 @@ async function makeRoundTripPayment(req, res, next) {
   }
 }
 
+async function createRazorpayOrder(req, res, next) {
+  try {
+    const { amount } = req.body;
+    const response = await BookingService.createRazorpayOrder(amount);
+    SuccessResponse.data = response;
+    SuccessResponse.message = "Successfully created Razorpay order";
+    return res.status(StatusCodes.OK).json(SuccessResponse);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   createBooking,
   makePayment,
@@ -154,5 +166,6 @@ module.exports = {
   getFlightSeats,
   getMyBookings,
   createRoundTripBooking,
-  makeRoundTripPayment
+  makeRoundTripPayment,
+  createRazorpayOrder
 };

@@ -12,6 +12,7 @@ router.post("/payments", AuthMiddlewares.checkAuth, BookingController.makePaymen
 router.post("/payments/roundtrip", AuthMiddlewares.checkAuth, BookingController.makeRoundTripPayment);
 router.post("/payments/round-trip", AuthMiddlewares.checkAuth, BookingController.makeRoundTripPayment);
 
+router.post("/razorpay/create-order", AuthMiddlewares.checkAuth, BookingController.createRazorpayOrder);
 router.post("/:id/cancel", AuthMiddlewares.checkAuth, BookingController.cancelBooking);
 router.get("/my-bookings", AuthMiddlewares.checkAuth, BookingController.getMyBookings);
 router.get("/flights/:flightId/seats", BookingController.getFlightSeats);
