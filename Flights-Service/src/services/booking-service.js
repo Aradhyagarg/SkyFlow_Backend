@@ -243,7 +243,7 @@ async function makePayment(data){
         if(bookingDetails.userId != data.userId){
             throw new AppError('The user corresponding to the booking does not match', StatusCodes.BAD_REQUEST);
         }
-        const response = await bookingRepository.update(data.bookingId, {status: BOOKED, paymentMethod: data.paymentMethod}, transaction);
+        await bookingRepository.update(data.bookingId, {status: BOOKED, paymentMethod: data.paymentMethod}, transaction);
         
         // Write event to Transactional Outbox for RabbitMQ publishing
         const OutboxRepository = require('../repositories/outbox-repository');
@@ -260,7 +260,8 @@ async function makePayment(data){
         }, transaction);
 
         await transaction.commit();
-        return response;
+        const updatedBooking = await bookingRepository.get(data.bookingId);
+        return updatedBooking;
     }catch(error){
         await transaction.rollback();
         throw error;
