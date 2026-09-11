@@ -64,6 +64,25 @@ app.use((req, res) => {
     });
 });
 
+// Keep-alive mechanism to prevent Render free-tier hibernation (pings every 14 minutes)
+const SERVICES_TO_PING = [
+    'https://skyflow-api-gateway.onrender.com/api/health',
+    'https://skyflow-auth-service.onrender.com/api/v1/info',
+    'https://skyflow-airline-service.onrender.com/api/v1/info',
+    'https://skyflow-booking-service.onrender.com/api/v1/info'
+];
+
+setInterval(() => {
+    SERVICES_TO_PING.forEach(async (url) => {
+        try {
+            await fetch(url);
+            console.log(`[Keep-Alive] Pinged ${url} successfully at ${new Date().toISOString()}`);
+        } catch (err) {
+            console.log(`[Keep-Alive] Ping to ${url} failed: ${err.message}`);
+        }
+    });
+}, 14 * 60 * 1000);
+
 app.listen(PORT, () => {
     console.log(`=================================================`);
     console.log(`   SkyFlow API Gateway running on port ${PORT}   `);
