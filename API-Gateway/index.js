@@ -64,7 +64,7 @@ app.use((req, res) => {
     });
 });
 
-// Keep-alive mechanism to prevent Render free-tier hibernation (pings every 14 minutes)
+// Keep-alive mechanism to prevent Render free-tier hibernation (pings every 14 minutes with 60s timeout for cold starts)
 const SERVICES_TO_PING = [
     'https://skyflow-api-gateway.onrender.com/api/health',
     'https://skyflow-auth-service.onrender.com/api/v1/info',
@@ -75,7 +75,10 @@ const SERVICES_TO_PING = [
 setInterval(() => {
     SERVICES_TO_PING.forEach(async (url) => {
         try {
-            await fetch(url);
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 60000); // 60s timeout for Render cold-starts
+            await fetch(url, { signal: controller.signal });
+            clearTimeout(timer);
             console.log(`[Keep-Alive] Pinged ${url} successfully at ${new Date().toISOString()}`);
         } catch (err) {
             console.log(`[Keep-Alive] Ping to ${url} failed: ${err.message}`);
