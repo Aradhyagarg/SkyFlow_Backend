@@ -80,8 +80,12 @@ app.use((req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`=================================================`);
-    console.log(`   SkyFlow Unified Server running on port ${PORT} `);
-    console.log(`=================================================`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`=================================================`);
+        console.log(`   SkyFlow Unified Server running on port ${PORT} `);
+        console.log(`=================================================`);
+    });
+}
+
+module.exports = app;
