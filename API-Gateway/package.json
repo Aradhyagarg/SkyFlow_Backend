@@ -1,6 +1,7 @@
 {
   "name": "api-gateway",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "Unified API Gateway for MMT microservices",
   "main": "index.js",
   "scripts": {

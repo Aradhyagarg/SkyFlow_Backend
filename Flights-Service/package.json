@@ -1,6 +1,7 @@
 {
   "name": "base_node_js_project_template",
   "version": "1.0.0",
+  "type": "commonjs",
   "description": "A basic started boilerplate project for node",
   "main": "index.js",
   "scripts": {
