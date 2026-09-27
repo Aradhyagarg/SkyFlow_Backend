@@ -73,7 +73,7 @@ try {
     app.use('/api', bookingRoutes);
     console.log('[Unified Backend] Mounted Auth, Airline, and Booking routes directly in memory');
 } catch (e) {
-    console.error('[Unified Backend] Error mounting direct routes:', e.message);
+    console.error('[Unified Backend] Error mounting direct routes:', e.stack || e.message);
 }
 
 // 404 Route Fallback
