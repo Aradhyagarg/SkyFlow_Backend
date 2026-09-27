@@ -58,24 +58,23 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Proxy Rules Configuration
-app.use('/api/v1/users', createProxyMiddleware({
-    target: process.env.AUTH_SERVICE_URL,
-    changeOrigin: true,
-    logLevel: 'debug'
-}));
+// Body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/v1/flights', createProxyMiddleware({
-    target: process.env.AIRLINE_SERVICE_URL,
-    changeOrigin: true,
-    logLevel: 'debug'
-}));
+// Direct In-Memory Microservice Routing (fallback for suspended external services)
+try {
+    const authRoutes = require('../Auth-Service/src/routes');
+    const airlineRoutes = require('../airline/src/routes');
+    const bookingRoutes = require('../Flights-Service/src/routes');
 
-app.use('/api/v1/bookings', createProxyMiddleware({
-    target: process.env.BOOKING_SERVICE_URL,
-    changeOrigin: true,
-    logLevel: 'debug'
-}));
+    app.use('/api', authRoutes);
+    app.use('/api', airlineRoutes);
+    app.use('/api', bookingRoutes);
+    console.log('[Unified Backend] Mounted Auth, Airline, and Booking routes directly in memory');
+} catch (e) {
+    console.error('[Unified Backend] Error mounting direct routes:', e.message);
+}
 
 // 404 Route Fallback
 app.use((req, res) => {
