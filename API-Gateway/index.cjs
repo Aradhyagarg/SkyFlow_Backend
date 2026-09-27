@@ -28,6 +28,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Root landing route
+app.get('/', (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: 'Welcome to SkyFlow Unified API Gateway',
+        healthCheck: '/api/health'
+    });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
     return res.status(200).json({
