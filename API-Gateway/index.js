@@ -64,9 +64,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Direct In-Memory Microservice Routing (fallback for suspended external services)
 try {
-    const authRoutes = require('../Auth-Service/src/routes');
-    const airlineRoutes = require('../airline/src/routes');
-    const bookingRoutes = require('../Flights-Service/src/routes');
+    const path = require('path');
+    const authRoutes = require(path.resolve(__dirname, '../Auth-Service/src/routes'));
+    const airlineRoutes = require(path.resolve(__dirname, '../airline/src/routes'));
+    const bookingRoutes = require(path.resolve(__dirname, '../Flights-Service/src/routes'));
 
     app.use('/api', authRoutes);
     app.use('/api', airlineRoutes);
