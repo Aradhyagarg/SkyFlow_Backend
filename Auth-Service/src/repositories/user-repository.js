@@ -7,7 +7,11 @@ class UserRepository extends CrudRepository {
     }
 
     async getUserByEmail(email) {
-        const user = await User.findOne({ where: { email: email } });
+        const cleanEmail = email ? email.trim() : '';
+        let user = await User.findOne({ where: { email: cleanEmail } });
+        if (!user) {
+            user = await User.findOne({ where: { email: cleanEmail.toLowerCase() } });
+        }
         return user;
     }
 

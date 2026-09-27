@@ -19,9 +19,13 @@ app.use(morgan('dev'));
 
 // Header sanitization middleware to prevent HTTP 431 Request Header Fields Too Large
 app.use((req, res, next) => {
-    if (req.headers.cookie && req.headers.cookie.length > 2048) {
-        delete req.headers.cookie;
-    }
+    delete req.headers['cookie'];
+    delete req.headers['x-devtools-emulate-network-conditions-client-id'];
+    Object.keys(req.headers).forEach(key => {
+        if (typeof req.headers[key] === 'string' && req.headers[key].length > 2048 && key !== 'authorization') {
+            delete req.headers[key];
+        }
+    });
     next();
 });
 
