@@ -25,7 +25,11 @@ app.use('/api', apiRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-app.listen(ServerConfig.PORT, () => {
-    console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
-    Logger.info(`Auth-Service running on port ${ServerConfig.PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(ServerConfig.PORT, () => {
+        console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
+        Logger.info(`Auth-Service running on port ${ServerConfig.PORT}`);
+    });
+}
+
+module.exports = app;

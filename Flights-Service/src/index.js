@@ -26,13 +26,17 @@ app.use('/api', apiRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-app.listen(ServerConfig.PORT, async () => {
-    console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
-    CRONS();
-    try {
-        await QueueConfig.connectQueue();
-    } catch (error) {
-        console.error('Failed to initialize Queue connection:', error);
-    }
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(ServerConfig.PORT, async () => {
+        console.log(`Successfully started the server on PORT : ${ServerConfig.PORT}`);
+        CRONS();
+        try {
+            await QueueConfig.connectQueue();
+        } catch (error) {
+            console.error('Failed to initialize Queue connection:', error);
+        }
+    });
+}
+
+module.exports = app;
 // Nodemon restart trigger for queue configuration update

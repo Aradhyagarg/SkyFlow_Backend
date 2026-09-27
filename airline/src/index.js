@@ -28,15 +28,19 @@ app.use('/api', apiRoutes);
 // Global Error Handler
 app.use(errorHandler);
 
-app.listen(ServerConfig.PORT, async () => {
-    console.log(`Successfully started the server at PORT : ${ServerConfig.PORT}`);
-    console.log(`Swagger documentation available at http://localhost:${ServerConfig.PORT}/api-docs`);
-    Logger.info("Successfully run server", {});
-    initFlightCron(); // Start daily flights generator and lifecycle manager
-    try {
-        await QueueConfig.connectQueue();
-    } catch (error) {
-        console.error('Failed to initialize Queue consumer:', error);
-    }
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(ServerConfig.PORT, async () => {
+        console.log(`Successfully started the server at PORT : ${ServerConfig.PORT}`);
+        console.log(`Swagger documentation available at http://localhost:${ServerConfig.PORT}/api-docs`);
+        Logger.info("Successfully run server", {});
+        initFlightCron(); // Start daily flights generator and lifecycle manager
+        try {
+            await QueueConfig.connectQueue();
+        } catch (error) {
+            console.error('Failed to initialize Queue consumer:', error);
+        }
+    });
+}
+
+module.exports = app;
 // Nodemon restart trigger for queue configuration update

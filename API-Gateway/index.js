@@ -58,24 +58,24 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Proxy Rules Configuration
+app.use('/api/v1/users', createProxyMiddleware({
+    target: process.env.AUTH_SERVICE_URL,
+    changeOrigin: true,
+    logLevel: 'debug'
+}));
 
-// Direct In-Memory Microservice Routing (fallback for suspended external services)
-try {
-    const path = require('path');
-    const authRoutes = require(path.resolve(__dirname, '../Auth-Service/src/routes'));
-    const airlineRoutes = require(path.resolve(__dirname, '../airline/src/routes'));
-    const bookingRoutes = require(path.resolve(__dirname, '../Flights-Service/src/routes'));
+app.use('/api/v1/flights', createProxyMiddleware({
+    target: process.env.AIRLINE_SERVICE_URL,
+    changeOrigin: true,
+    logLevel: 'debug'
+}));
 
-    app.use('/api', authRoutes);
-    app.use('/api', airlineRoutes);
-    app.use('/api', bookingRoutes);
-    console.log('[Unified Backend] Mounted Auth, Airline, and Booking routes directly in memory');
-} catch (e) {
-    console.error('[Unified Backend] Error mounting direct routes:', e.stack || e.message);
-}
+app.use('/api/v1/bookings', createProxyMiddleware({
+    target: process.env.BOOKING_SERVICE_URL,
+    changeOrigin: true,
+    logLevel: 'debug'
+}));
 
 // 404 Route Fallback
 app.use((req, res) => {
@@ -85,34 +85,10 @@ app.use((req, res) => {
     });
 });
 
-// Keep-alive mechanism to prevent Render free-tier hibernation (pings every 14 minutes with 60s timeout for cold starts)
-const SERVICES_TO_PING = [
-    'https://skyflow-api-gateway.onrender.com/api/health',
-    'https://skyflow-auth-service.onrender.com/api/v1/info',
-    'https://skyflow-airline-service.onrender.com/api/v1/info',
-    'https://skyflow-booking-service.onrender.com/api/v1/info'
-];
-
-setInterval(() => {
-    SERVICES_TO_PING.forEach(async (url) => {
-        try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 60000); // 60s timeout for Render cold-starts
-            await fetch(url, { signal: controller.signal });
-            clearTimeout(timer);
-            console.log(`[Keep-Alive] Pinged ${url} successfully at ${new Date().toISOString()}`);
-        } catch (err) {
-            console.log(`[Keep-Alive] Ping to ${url} failed: ${err.message}`);
-        }
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`SkyFlow API Gateway running on port ${PORT}`);
     });
-}, 14 * 60 * 1000);
+}
 
-app.listen(PORT, () => {
-    console.log(`=================================================`);
-    console.log(`   SkyFlow API Gateway running on port ${PORT}   `);
-    console.log(`   Routing details:                              `);
-    console.log(`   - /api/v1/users    => ${process.env.AUTH_SERVICE_URL}`);
-    console.log(`   - /api/v1/flights  => ${process.env.AIRLINE_SERVICE_URL}`);
-    console.log(`   - /api/v1/bookings => ${process.env.BOOKING_SERVICE_URL}`);
-    console.log(`=================================================`);
-});
+module.exports = app;
