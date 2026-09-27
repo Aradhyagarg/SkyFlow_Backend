@@ -17,6 +17,14 @@ app.use(helmet({
 }));
 app.use(morgan('dev'));
 
+// Header sanitization middleware to prevent HTTP 431 Request Header Fields Too Large
+app.use((req, res, next) => {
+    if (req.headers.cookie && req.headers.cookie.length > 2048) {
+        delete req.headers.cookie;
+    }
+    next();
+});
+
 // Configure CORS manually to handle custom preflights cleanly
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
