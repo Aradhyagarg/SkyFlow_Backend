@@ -6,7 +6,8 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
+const configJson = require('../config/config.json');
+const config = configJson[env] || configJson['development'] || {};
 const db = {};
 
 let sequelize;
@@ -20,11 +21,11 @@ if (config.use_env_variable) {
     password: process.env.DB_PASSWORD || config.password,
     database: process.env.DB_DATABASE || config.database,
     host: process.env.DB_HOST || config.host,
-    port: process.env.DB_PORT || config.port,
+    port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : config.port,
     dialectOptions: process.env.DB_SSL === 'true' ? {
       ssl: {
         require: true,
-        rejectUnauthorized: true
+        rejectUnauthorized: false
       }
     } : config.dialectOptions
   };
