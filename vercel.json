@@ -1,22 +1,8 @@
 {
-  "version": 2,
-  "builds": [
+  "rewrites": [
     {
-      "src": "server.cjs",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": [
-          "Auth-Service/**",
-          "airline/**",
-          "Flights-Service/**"
-        ]
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "server.cjs"
+      "source": "/(.*)",
+      "destination": "/api/index.js"
     }
   ]
 }
