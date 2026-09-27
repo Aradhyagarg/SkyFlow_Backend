@@ -31,20 +31,8 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 }
 
-fs
-  .readdirSync(__dirname)
-  .filter(file => {
-    return (
-      file.indexOf('.') !== 0 &&
-      file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
-    );
-  })
-  .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+const Booking = require('./booking')(sequelize, Sequelize.DataTypes);
+db[Booking.name] = Booking;
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
