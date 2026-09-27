@@ -8,20 +8,20 @@ class UserRepository extends CrudRepository {
 
     async getUserByEmail(email) {
         const cleanEmail = email ? email.trim() : '';
-        let user = await User.findOne({ where: { email: cleanEmail } });
+        let user = await User.findOne({ where: { email: cleanEmail }, paranoid: false });
         if (!user) {
-            user = await User.findOne({ where: { email: cleanEmail.toLowerCase() } });
+            user = await User.findOne({ where: { email: cleanEmail.toLowerCase() }, paranoid: false });
         }
         return user;
     }
 
     async getUserByVerificationToken(token) {
-        const user = await User.findOne({ where: { verificationToken: token } });
+        const user = await User.findOne({ where: { verificationToken: token }, paranoid: false });
         return user;
     }
 
     async getUserByResetToken(token) {
-        const user = await User.findOne({ where: { resetPasswordToken: token } });
+        const user = await User.findOne({ where: { resetPasswordToken: token }, paranoid: false });
         return user;
     }
 }
