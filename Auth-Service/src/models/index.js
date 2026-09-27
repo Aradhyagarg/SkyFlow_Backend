@@ -10,13 +10,19 @@ const configJson = require('../config/config.json');
 const config = configJson[env] || configJson['development'] || {};
 const db = {};
 
+const mysql2 = require('mysql2');
+
 let sequelize;
 if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+  sequelize = new Sequelize(process.env[config.use_env_variable], {
+    ...config,
+    dialectModule: mysql2
+  });
 } else {
   // Override config with environment variables if present
   const dbConfig = {
     ...config,
+    dialectModule: mysql2,
     username: process.env.DB_USERNAME || config.username,
     password: process.env.DB_PASSWORD || config.password,
     database: process.env.DB_DATABASE || config.database,
