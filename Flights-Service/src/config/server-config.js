@@ -5,8 +5,8 @@ dotenv.config();
 
 module.exports = {
     PORT: process.env.PORT || 4000,
-    FLIGHT_SERVICE: process.env.FLIGHT_SERVICE || 'https://skyflow-backend.aradhyagarg.deno.net',
-    AUTH_SERVICE: process.env.AUTH_SERVICE || 'https://skyflow-backend.aradhyagarg.deno.net',
+    FLIGHT_SERVICE: process.env.FLIGHT_SERVICE || 'https://sky-flow-backend-4yy4.vercel.app',
+    AUTH_SERVICE: process.env.AUTH_SERVICE_URL || process.env.AUTH_SERVICE || 'https://sky-flow-backend.vercel.app',
     REDIS_HOST: process.env.REDIS_HOST || '127.0.0.1',
     REDIS_PORT: process.env.REDIS_PORT || 6379,
     REDIS_USERNAME: process.env.REDIS_USERNAME,

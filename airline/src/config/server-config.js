@@ -9,5 +9,5 @@ module.exports = {
     REDIS_PORT: process.env.REDIS_PORT,
     REDIS_USERNAME: process.env.REDIS_USERNAME,
     REDIS_PASSWORD: process.env.REDIS_PASSWORD,
-    AUTH_SERVICE: process.env.AUTH_SERVICE || 'http://localhost:5001'
+    AUTH_SERVICE: process.env.AUTH_SERVICE_URL || process.env.AUTH_SERVICE || 'https://sky-flow-backend.vercel.app'
 }
