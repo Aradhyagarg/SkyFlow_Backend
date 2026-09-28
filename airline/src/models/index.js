@@ -42,11 +42,13 @@ const Airplane = require('./airplane')(sequelize, Sequelize.DataTypes);
 const Airport = require('./airport')(sequelize, Sequelize.DataTypes);
 const City = require('./city')(sequelize, Sequelize.DataTypes);
 const Flight = require('./flight')(sequelize, Sequelize.DataTypes);
+const Seat = require('./seat')(sequelize, Sequelize.DataTypes);
 
 db[Airplane.name] = Airplane;
 db[Airport.name] = Airport;
 db[City.name] = City;
 db[Flight.name] = Flight;
+db[Seat.name] = Seat;
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
