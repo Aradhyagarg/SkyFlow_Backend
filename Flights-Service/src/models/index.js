@@ -39,7 +39,12 @@ if (config.use_env_variable) {
 }
 
 const Booking = require('./booking')(sequelize, Sequelize.DataTypes);
+const Passenger = require('./passenger')(sequelize, Sequelize.DataTypes);
+const Outbox = require('./outbox')(sequelize, Sequelize.DataTypes);
+
 db[Booking.name] = Booking;
+db[Passenger.name] = Passenger;
+db[Outbox.name] = Outbox;
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
