@@ -22,6 +22,13 @@ app.use(express.urlencoded({extended: true}));
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
+app.get('/', (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: 'SkyFlow Airline-Service is live and operational'
+    });
+});
+
 // API Routes
 app.use('/api', apiRoutes);
 

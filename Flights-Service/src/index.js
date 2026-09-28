@@ -21,6 +21,13 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/', (req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: 'SkyFlow Booking-Service is live and operational'
+    });
+});
+
 app.use('/api', apiRoutes);
 
 // Global Error Handler

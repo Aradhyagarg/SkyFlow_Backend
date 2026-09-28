@@ -3,11 +3,17 @@ const ServerConfig = require('./server-config');
 
 // Initialize the Redis client with credentials from server configuration
 const redisConfig = {
-    host: ServerConfig.REDIS_HOST,
-    port: ServerConfig.REDIS_PORT,
+    host: ServerConfig.REDIS_HOST || '127.0.0.1',
+    port: ServerConfig.REDIS_PORT || 6379,
     username: ServerConfig.REDIS_USERNAME,
     password: ServerConfig.REDIS_PASSWORD,
-    maxRetriesPerRequest: null
+    lazyConnect: true,
+    enableOfflineQueue: false,
+    maxRetriesPerRequest: 1,
+    retryStrategy(times) {
+        if (times > 2) return null;
+        return Math.min(times * 100, 1000);
+    }
 };
 
 // Enable TLS for cloud Redis (Upstash) in production
@@ -22,7 +28,7 @@ redisClient.on('connect', () => {
 });
 
 redisClient.on('error', (err) => {
-    console.error('Redis Connection Error:', err);
+    console.warn('Redis connection issue (non-fatal):', err.message);
 });
 
 module.exports = redisClient;
