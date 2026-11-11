@@ -58,6 +58,27 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Cron endpoint for Vercel automated daily flight generation
+app.get('/api/cron/generate-flights', async (req, res) => {
+    try {
+        const cronModule = require('./airline/src/utils/common/cron-jobs');
+        const manage = cronModule.manageFlightLifecycle || cronModule;
+        await manage();
+        return res.status(200).json({
+            success: true,
+            message: 'Successfully generated flights and updated flight lifecycle',
+            timestamp: new Date()
+        });
+    } catch (err) {
+        console.error('Cron Execution Error:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to run flight lifecycle cron',
+            error: err.message
+        });
+    }
+});
+
 // Mount Microservice Routes Directly
 try {
     const authRoutes = require('./Auth-Service/src/routes');

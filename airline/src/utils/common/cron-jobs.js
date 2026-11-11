@@ -139,7 +139,7 @@ async function manageFlightLifecycle() {
             return;
         }
 
-        for (let dayOffset = 1; dayOffset <= 10; dayOffset++) {
+        for (let dayOffset = 0; dayOffset <= 10; dayOffset++) {
             const targetDate = new Date();
             targetDate.setDate(targetDate.getDate() + dayOffset);
             
@@ -175,7 +175,11 @@ async function manageFlightLifecycle() {
                 }
 
                 // Random departure hour (6 AM to 9 PM)
-                const departureHour = Math.floor(6 + Math.random() * 16);
+                let departureHour = Math.floor(6 + Math.random() * 16);
+                if (dayOffset === 0) {
+                    departureHour = Math.max(now.getHours() + 1, departureHour);
+                    if (departureHour >= 24) departureHour = 23;
+                }
                 const departureMin = Math.floor(Math.random() * 4) * 15;
                 
                 const depTime = new Date(startOfDay);
@@ -224,4 +228,5 @@ function initFlightCron() {
     manageFlightLifecycle();
 }
 
+initFlightCron.manageFlightLifecycle = manageFlightLifecycle;
 module.exports = initFlightCron;

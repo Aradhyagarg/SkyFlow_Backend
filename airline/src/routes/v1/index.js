@@ -28,4 +28,24 @@ router.use('/flights', flightRoutes);
  */
 router.get('/info', InfoController.info);
 
+// Cron trigger for flight lifecycle & automated flight generation
+router.get('/cron/generate-flights', async (req, res) => {
+    try {
+        const { manageFlightLifecycle } = require('../../utils/common/cron-jobs');
+        await manageFlightLifecycle();
+        return res.status(200).json({
+            success: true,
+            message: 'Successfully generated flights and updated flight lifecycle',
+            timestamp: new Date()
+        });
+    } catch (err) {
+        console.error('Cron Execution Error:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to run flight lifecycle cron',
+            error: err.message
+        });
+    }
+});
+
 module.exports = router;
