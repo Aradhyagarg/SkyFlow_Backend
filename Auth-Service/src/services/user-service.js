@@ -163,7 +163,7 @@ async function forgotPassword(email) {
 
         // Send Email
         const { sendResetPasswordEmail } = require('../utils/mailer');
-        sendResetPasswordEmail(user.email, token);
+        await sendResetPasswordEmail(user.email, token);
 
         return true;
     } catch(error) {
