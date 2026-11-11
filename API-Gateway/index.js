@@ -71,6 +71,12 @@ app.use('/api/v1/flights', createProxyMiddleware({
     logLevel: 'debug'
 }));
 
+app.use('/api/v1/cron', createProxyMiddleware({
+    target: process.env.AIRLINE_SERVICE_URL,
+    changeOrigin: true,
+    logLevel: 'debug'
+}));
+
 app.use('/api/v1/bookings', createProxyMiddleware({
     target: process.env.BOOKING_SERVICE_URL,
     changeOrigin: true,
